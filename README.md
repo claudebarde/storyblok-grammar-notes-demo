@@ -20,9 +20,9 @@ Requirements: Node.js 22.12 or newer and npm.
    npm run dev
    ```
 
-4. Open `https://localhost:4321`. The first run may ask you to trust the local development certificate. Visit the address once before opening the Storyblok Visual Editor.
+4. Open `https://localhost:4321`. The first run may ask you to trust the local development certificate.
 
-The stories in this demo are drafts, so the app requests `version: "draft"`. In Storyblok, set **Settings → Visual Editor → Preview environment** to `https://localhost:4321`. In the Home story’s **Config** tab, set **Real path** to `/`.
+The stories in this demo are drafts, so the app requests `version: "draft"`. In Storyblok, set **Settings → Visual Editor → Location (default environment)** to `https://localhost:4321`. In the Home story’s **Config** tab, set **Real path** to `/`.
 
 To create a production build, run `npm run build`. The project uses Astro’s Node adapter; the standalone server entry point is `dist/server/entry.mjs`. Set the preview token as a server-side environment variable in any deployment that needs to render draft content. Never commit a real token.
 
@@ -45,6 +45,8 @@ The Astro route requests the draft Home story and renders its blocks through `St
 
 This is useful when content editors need to reorder or replace cards without changing the page template, while developers keep control of how each component is displayed.
 
-## Add the banners
+## Article banners
 
-Upload the five JPGs from the source `banners` folder to Storyblok’s Assets area, then select each matching image in its Article story’s **Banner** field. `index.json` is the mapping between article slug and banner filename. The current stories and cards work without banners.
+The five JPGs are uploaded to the Storyblok Assets area and connected to their matching Article stories’ **Banner** fields. `index.json` provides the article slug to banner filename mapping. The Home cards resolve each linked story’s banner automatically. The banner and Markdown rendering have been checked in the Visual Editor preview.
+
+The article currently has no in-page link back to Home; use the browser’s Back button to return to the card list.
