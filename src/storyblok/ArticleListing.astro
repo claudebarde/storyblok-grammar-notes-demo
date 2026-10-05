@@ -1,0 +1,16 @@
+---
+import { storyblokEditable } from "@storyblok/astro";
+import StoryblokComponent from "@storyblok/astro/StoryblokComponent.astro";
+const { blok } = Astro.props;
+---
+
+<section class="listing" {...storyblokEditable(blok)}>
+  <div class="listing-heading">
+    <p class="eyebrow">A field guide</p>
+    <h1>{blok.heading}</h1>
+    <p class="listing-intro">Short, careful guides to the structures that make Sumerian grammar distinctive.</p>
+  </div>
+  <div class="article-grid">
+    {blok.cards?.map((card) => <StoryblokComponent blok={card} />)}
+  </div>
+</section>

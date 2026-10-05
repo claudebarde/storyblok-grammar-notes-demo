@@ -1,0 +1,43 @@
+---
+import { storyblokEditable, useStoryblokApi } from "@storyblok/astro";
+const { blok } = Astro.props;
+const targetSlug = blok.article?.cached_url;
+let article;
+
+if (targetSlug) {
+  const storyblokApi = useStoryblokApi();
+  try {
+    const response = await storyblokApi.get(`cdn/stories/${targetSlug}`, { version: "draft" });
+    article = response.data.story;
+  } catch {
+    article = undefined;
+  }
+}
+
+const href = article?.full_slug ? `/${article.full_slug}` : targetSlug ? `/${targetSlug}` : "#";
+const bannerUrl = article?.content?.banner?.filename;
+const bannerAlt = article?.content?.banner?.alt || article?.name || "";
+const initial = (article?.name || "?").slice(0, 1);
+---
+
+<article class="article-card" {...storyblokEditable(blok)}>
+  {article ? (
+    <a href={href}>
+      <div class="card-cover">
+        {bannerUrl ? <img src={bannerUrl} alt={bannerAlt} loading="lazy" /> : <span class="cover-placeholder">{initial}</span>}
+      </div>
+      <div class="card-copy">
+        <span class="card-category">{article.content?.category || "Grammar"}</span>
+        <h2>{article.name}</h2>
+        <p>{article.content?.summary}</p>
+        <span class="read-link">Read the note →</span>
+      </div>
+    </a>
+  ) : (
+    <div class="card-copy">
+      <span class="card-category">Article link</span>
+      <h2>{targetSlug || "Select an article"}</h2>
+      <p>This card is ready to connect to an Article story.</p>
+    </div>
+  )}
+</article>

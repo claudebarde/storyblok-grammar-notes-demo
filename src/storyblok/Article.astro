@@ -1,0 +1,17 @@
+---
+import { storyblokEditable } from "@storyblok/astro";
+import MarkdownIt from "markdown-it";
+import footnote from "markdown-it-footnote";
+
+const { blok } = Astro.props;
+const markdown = new MarkdownIt({ html: false, linkify: true, breaks: false }).use(footnote);
+const bodyHtml = markdown.render(blok.body || "");
+const bannerUrl = blok.banner?.filename;
+const bannerAlt = blok.banner?.alt || "";
+---
+
+<article class="article-content" {...storyblokEditable(blok)}>
+  {bannerUrl && <img class="article-banner" src={bannerUrl} alt={bannerAlt} />}
+  {blok.summary && <p class="article-summary">{blok.summary}</p>}
+  <div class="markdown-body" set:html={bodyHtml} />
+</article>

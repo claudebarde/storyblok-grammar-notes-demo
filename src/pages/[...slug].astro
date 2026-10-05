@@ -1,0 +1,40 @@
+---
+import { getPayload, useStoryblokApi } from "@storyblok/astro";
+import StoryblokComponent from "@storyblok/astro/StoryblokComponent.astro";
+import Layout from "../layouts/Layout.astro";
+
+const slug = Astro.params.slug || "home";
+const payload = await getPayload({ locals: Astro.locals });
+let story = payload?.story;
+
+if (!story) {
+  const storyblokApi = useStoryblokApi();
+  try {
+    const response = await storyblokApi.get(`cdn/stories/${slug}`, {
+      version: "draft",
+    });
+    story = response.data.story;
+  } catch {
+    Astro.response.status = 404;
+  }
+}
+
+const isArticle = story?.content?.component === "article";
+const pageTitle = story?.name || "Grammar Notes";
+---
+
+<Layout title={pageTitle}>
+  {story ? (
+    <main class:list={["site-main", { "site-main--article": isArticle }]}>
+      {isArticle && <p class="eyebrow">Modern Sumerian · Grammar note</p>}
+      {isArticle && <h1 class="article-title">{story.name}</h1>}
+      <StoryblokComponent blok={story.content} />
+    </main>
+  ) : (
+    <main class="site-main not-found">
+      <p class="eyebrow">Story not found</p>
+      <h1>This page is not in the demo space yet.</h1>
+      <a href="/">Back to the grammar notes</a>
+    </main>
+  )}
+</Layout>
